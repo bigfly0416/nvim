@@ -1,10 +1,11 @@
-local ok, lsp = pcall(require, "lspconfig")
+local ok, ins, cmp_nvim_lsp
+ok, _ = pcall(require, "lspconfig")
 if not ok then
     print("lspconfig not installed")
     return
 end
 
-local ok, ins = pcall(require, "nvim-lsp-installer")
+ok, ins = pcall(require, "nvim-lsp-installer")
 
 if not ok then
     print("lsp installer not installed")
@@ -42,7 +43,7 @@ end
 -- setup capabilities
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 
-local ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
 if ok then
     capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
 else
@@ -52,8 +53,8 @@ end
 
 ins.on_server_ready(
     function(s)
-    local ok, opts = pcall(require, "u.lsp.settings." .. s.name)
-    if not ok then
+    local o, opts = pcall(require, "u.lsp.settings." .. s.name)
+    if not o then
         opts = {}
     end
 

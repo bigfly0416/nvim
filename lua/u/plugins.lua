@@ -130,4 +130,5 @@ return packer.startup(function(use)
 
     -- dashboard
     use "goolord/alpha-nvim"
+    use "Shatur/neovim-session-manager"
 end)

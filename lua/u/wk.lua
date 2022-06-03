@@ -11,25 +11,54 @@ local tt = require('telescope.themes')
 local actions = require "telescope.actions"
 local fns = require("u.telescope")
 
+local isDir = function(s)
+    local fd = vim.loop.fs_open(s, "r", 438)
+    if fd == nil then return false end
+    local stat = assert(vim.loop.fs_fstat(fd))
+    vim.loop.fs_close(fd)
+    return stat.type == "directory"
+end
+
 sal["vim-enter"] = function()
+    local timer = vim.loop.new_timer()
+    local buf = vim.fn.expand('%:p')
+
+    -- open a file, do nothing
+    if #buf > 0 and not isDir(buf) then
+        return
+    end
+
+    if #buf == 0 then
+        buf = vim.fn.getcwd()
+    end
+
+    -- change current working directory
+    vim.api.nvim_command(string.format("cd %s", buf))
+
     local tree = function()
-        local timer = vim.loop.new_timer()
         timer:start(0, 0, vim.schedule_wrap(function()
             vim.api.nvim_command "NvimTreeOpen"
         end))
     end
 
-    if vim.bo.filetype == "alpha" then
-        tree()
-        return
+    local ok, m = pcall(require, "session_manager.utils")
+
+    -- try to load session
+    if ok then
+        local name = m.dir_to_session_filename(buf)
+        if name:exists() then
+            m.load_session(name.filename)
+            tree()
+            return
+        end
     end
 
-    if vim.bo.filetype ~= "" then
-        return
+    m.is_session = true
+    -- if alpha is not active, open
+    if vim.bo.filetype ~= "alpha" then
+        vim.api.nvim_command "Alpha"
     end
 
-    -- replace netrw with alpha and nvimtree
-    vim.api.nvim_command "Alpha"
     tree()
 end
 
@@ -71,7 +100,7 @@ local reg = function(tb, wkTb)
     wk.register(wkTb, { buffer = 0 })
 end
 
-
+-- generate random keymaps
 local nvimTree = function()
     local i = 1
     local mp = vim.api.nvim_buf_set_keymap
@@ -167,14 +196,18 @@ local doMap = function()
 
     maps[#maps + 1] = {
         key = "gh",
-        fn = function() showHelps(tt.get_dropdown({ previewer = false })) end,
+        fn = function() showHelps(tt.get_dropdown({
+                previewer = false,
+                layout_config = {
+                    -- display as more items as possible
+                    height = math.min(#helps + 4, vim.o.lines - 8),
+                }
+            }))
+        end,
         group = "Finder", desc = "helps",
     }
 
     reg(maps, {})
-
-
-
     reg(helps, { ["<leader><space>"] = { name = "+helps" } })
 end
 

@@ -7,7 +7,6 @@ end
 -- lsp 针对不同类型的文件 lsp 的 key 要单独配置
 -- 使用描述字符串作为入参数
 return {
-    ["LSP code actions"] = { "ga", function() tb.lsp_code_actions() end },
     ["LSP references"] = { "gr", function()
         tb.lsp_references(
             { includeDeclaration = false, layout_config = { width = 0.99 } }

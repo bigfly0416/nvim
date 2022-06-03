@@ -14,7 +14,7 @@ toggleterm.setup({
     float_opts = {
         border = "curved",
         width = function() return vim.o.columns - 8 end,
-        height = function() return vim.fn.winheight(0) - 4 end,
+        height = function() return vim.o.lines - 8 end,
         winblend = 0,
         highlights = {
             border = "Normal",

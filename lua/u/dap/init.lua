@@ -1,4 +1,4 @@
-local ok, dap, ui, vt
+local ok, dap, ui, vt, ul
 
 ok, dap = pcall(require, "dap")
 

@@ -4,6 +4,4 @@ if not ok then
     return
 end
 
-indent.setup({
-
-})
+indent.setup({})

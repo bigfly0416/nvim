@@ -1,10 +1,11 @@
-local ok, cmp = pcall(require, "cmp")
+local ok, cmp, ls
+ok, cmp = pcall(require, "cmp")
 if not ok then
     print("cmp not installed")
     return
 end
 
-local ok, ls = pcall(require, "luasnip")
+ok, ls = pcall(require, "luasnip")
 if not ok then
     print("luasnip not installed")
     return

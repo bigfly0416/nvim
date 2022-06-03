@@ -1,8 +1,9 @@
-local ok, ap = pcall(require, "nvim-autopairs")
+local ok, ap, cmp
+ok, ap = pcall(require, "nvim-autopairs")
 
 if not ok then print("autopairs not installed"); return end
 
-local ok, cmp = pcall(require, "cmp")
+ok, cmp = pcall(require, "cmp")
 
 if not ok then print("cmp not installed"); return end
 

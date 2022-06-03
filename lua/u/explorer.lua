@@ -10,7 +10,7 @@ local defaultSize = 20
 local custom = function(opts)
     return {
         hijack_netrw = false,
-        open_on_setup = true,
+        open_on_setup = false,
         diagnostics = {
             enable = true,
             show_on_dirs = true,

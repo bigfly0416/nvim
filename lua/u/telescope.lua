@@ -18,7 +18,7 @@ telescope.setup({
                 ["<esc>"] = actions.close,
                 ["<CR>"] = actions.select_default,
             }
-        }
+        },
     }
 })
 
@@ -28,6 +28,10 @@ local gerrit = function(opts)
     local finders = require "telescope.finders"
     local conf = require("telescope.config").values
     local handle = io.popen('git review -l -r origin')
+
+    if handle == nil then
+        return
+    end
     local action_state = require "telescope.actions.state"
     local result = handle:read("*a")
     handle:close()
@@ -48,15 +52,15 @@ local gerrit = function(opts)
             results = reviews
         },
         sorter = conf.generic_sorter(opts),
-        attach_mappings = function(prompt_bufnr, map)
+        attach_mappings = function(prompt_bufnr)
             actions.select_default:replace(function()
                 actions.close(prompt_bufnr)
                 local selection = action_state.get_selected_entry()
                 if selection ~= nil then
                     local change = string.match(selection[1], '%d*')
                     os.execute('git review -d ' .. change .. ' -r origin')
-                    local ok, _ = pcall(require, "nvim-tree")
-                    if ok then
+                    local o, _ = pcall(require, "nvim-tree")
+                    if o then
                         vim.cmd("NvimTreeRefresh")
                     end
                 end
@@ -109,12 +113,16 @@ local results = function()
             tb.git_branches({ layout_config = { width = 0.99 } })
         end
         },
+        { group = 'Finder', desc = 'show all diagnostics', fn = function()
+            tb.diagnostics({ layout_config = { width = 0.99 } })
+        end
+        },
     }
 end
 
 
 -- "pin" current working directory when find files
-local cwd = vim.fn.getcwd()
+local cwd = "."
 
 local fns = function()
     local tb = require('telescope.builtin')
