@@ -15,7 +15,17 @@ local shell = function(s)
 end
 
 local diff = function(opts, src)
-    local records = shell('git log --pretty=format:"%h %an %ar %s"'):gmatch("[^\r\n]+")
+    local records = shell('git log --pretty=format:"%h %an %ar"'):gmatch("[^\r\n]+")
+    local msgs = (function()
+        local ms = shell('git log --pretty=format:"%s"'):gmatch("[^\r\n]+")
+        local j = 1
+        local ret = {}
+        for s in ms do
+            ret[j] = s
+            j = j + 1
+        end
+        return ret
+    end)()
 
     local es = {}
     local max = 0
@@ -25,13 +35,21 @@ local diff = function(opts, src)
         max = math.max(max, #s)
     end
 
+    local max1 = 0
+
+    for i, v in ipairs(es) do
+        local pad = max - #v
+        es[i] = es[i] .. string.rep(' ', pad) .. ' - ' .. msgs[i]
+        max1 = math.max(max1, #es[i])
+    end
+
     if opts == nil then
         opts = {}
     end
     opts.previewer = false
     opts.layout_config = {
         height = math.min(#es + 4, vim.o.lines - 8),
-        width = math.min(max + 8, vim.o.columns - 8)
+        width = math.min(max1 + 8, vim.o.columns - 8)
     }
     pickers.new(opts, {
         prompt_title = "git commits",
