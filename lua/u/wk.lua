@@ -100,7 +100,7 @@ local reg = function(tb, wkTb)
     wk.register(wkTb, { buffer = 0 })
 end
 
--- generate random keymaps
+-- generate random keymaps for nvimtree
 local nvimTree = function()
     local i = 1
     local mp = vim.api.nvim_buf_set_keymap
@@ -124,14 +124,39 @@ local nvimTree = function()
         mp(0, "n", key, v.fn, { noremap = false, silent = true, desc = v.desc })
         i = i + 1
     end
+end
 
-    mp(0, "n", "<leader>e", "<cmd>NvimTreeToggle<cr>", { noremap = true, silent = true, desc = "toggle tree" })
-    vim.api.nvim_command "messages"
+
+-- generate random keymaps for diff view file panel
+local dvf = function()
+    local i = 1
+    local mp = vim.api.nvim_buf_set_keymap
+    local maps =
+    {
+        { desc = "toggle stage(-)", fn = "-" },
+        { desc = "stage all(S)", fn = "S" },
+        { desc = "unstage all(U)", fn = "U" },
+        { desc = "restore(X)", fn = "X" },
+        { desc = "refresh files(R)", fn = "R" },
+        { desc = "open commit log(L)", fn = "L" },
+        { desc = "go to file(gf)", fn = "gf" },
+    }
+
+    for _, v in ipairs(maps) do
+        local key = "<leader><space>" .. alphas:sub(i, i)
+        mp(0, "n", key, v.fn, { noremap = false, silent = true, desc = v.desc })
+        i = i + 1
+    end
 end
 
 local doMap = function()
     if vim.bo.filetype == "NvimTree" then
         nvimTree()
+        return
+    end
+
+    if vim.bo.filetype == "DiffviewFiles" then
+        dvf()
         return
     end
 

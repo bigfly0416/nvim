@@ -37,6 +37,9 @@ local options = {
     wrap = true, -- display lines as one long line
     background = "dark",
 
+    foldmethod = "expr",
+    foldexpr = "nvim_treesitter#foldexpr()",
+    foldenable = false,
     scrolloff = 32,
 }
 
@@ -55,12 +58,9 @@ vim.g.vscode_italic_comment = 1
 -- Disable nvim-tree background color
 vim.g.vscode_disable_nvimtree_bg = true
 -- vim bookmar settings
-vim.g.bookmark_save_per_working_dir = 1
-vim.g.bookmark_auto_save = 1
-vim.g.bookmark_sign = ""
 vim.g.tmux_navigator_no_mappings = 1
-local ok, vscode = pcall(require, "vscode")
+local ok, _ = pcall(require, "vscode")
 
 if ok then
-    vim.cmd("colorscheme vscode")
+    vim.cmd [[colorscheme vscode]]
 end

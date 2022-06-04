@@ -93,8 +93,9 @@ return packer.startup(function(use)
 
     use "lukas-reineke/indent-blankline.nvim"
 
-    -- git sign
+    -- git
     use "lewis6991/gitsigns.nvim"
+    use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
 
     -- status line
     use {

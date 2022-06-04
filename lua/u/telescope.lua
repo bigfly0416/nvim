@@ -46,6 +46,7 @@ local gerrit = function(opts)
             end
         end
     end
+
     pickers.new(opts, {
         prompt_title = "gerrit reviews",
         finder = finders.new_table {
@@ -77,7 +78,7 @@ local results = function()
 
     return {
         { group = 'Nvimtree', desc = 'locate current file', fn = function() vim.cmd("NvimTreeFindFile") end },
-        { group = 'Gerrit', desc = 'pending reviews', function() gerrit(tt.get_dropdown({ previewer = false })) end },
+        { group = 'Gerrit', desc = 'pending reviews', fn = function() gerrit(tt.get_dropdown({ previewer = false })) end },
         { group = 'Dap', desc = 'configurations in .vscode/lanuch.json', fn = function()
             local dap = require("dap")
             dap.configurations = {}
@@ -105,13 +106,9 @@ local results = function()
         { group = 'Vim-test', desc = 'test nearest', fn = function()
             vim.cmd("UltestNearest")
         end },
-        { group = 'Git', desc = 'current file commits', fn = function()
-            tb.git_bcommits({ layout_config = { width = 0.99 } })
-        end
+        { group = 'Git', desc = 'current file commits', fn = function() vim.api.nvim_command [[DiffviewFileHistory]] end,
         },
-        { group = 'Git', desc = 'branches', fn = function()
-            tb.git_branches({ layout_config = { width = 0.99 } })
-        end
+        { group = 'Git', desc = 'project diff', fn = function() vim.api.nvim_command [[DiffviewOpen]] end,
         },
         { group = 'Finder', desc = 'show all diagnostics', fn = function()
             tb.diagnostics({ layout_config = { width = 0.99 } })
@@ -158,14 +155,7 @@ local fns = function()
             }
             )
         end, group = t, desc = "live grep all" },
-        {
-            key = "<leader>e",
-            fn = "<cmd>NvimTreeToggle<cr>",
-            group = "Nvimtree",
-            desc = "toggle",
-        },
     }
-
 end
 
 
