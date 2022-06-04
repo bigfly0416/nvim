@@ -80,9 +80,14 @@ local results = function()
             vim.api.nvim_command [[DiffviewOpen]]
         end,
         },
-        { group = 'Git', desc = 'diff history commit', fn = function()
+        { group = 'Git', desc = 'diff head with history commit', fn = function()
             local sal = require("u.sal")
-            sal.diff(tt.get_dropdown({}))
+            sal.diff(tt.get_dropdown({}, "head"))
+        end,
+        },
+        { group = 'Git', desc = 'expand commit modifications', fn = function()
+            local sal = require("u.sal")
+            sal.diff(tt.get_dropdown({}, "cur"))
         end,
         },
         { group = 'Finder', desc = 'show all diagnostics', fn = function()

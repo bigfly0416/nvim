@@ -14,7 +14,7 @@ local shell = function(s)
     return result
 end
 
-local diff = function(opts)
+local diff = function(opts, src)
     local records = shell('git log --pretty=format:"%h %an %ar %s"'):gmatch("[^\r\n]+")
 
     local es = {}
@@ -48,8 +48,22 @@ local diff = function(opts)
                 end
                 -- commit hash
                 local h = s[1]:match("^[0-9a-fA-F]+")
+
+                if src == "head" then
+                    vim.api.nvim_command(string.format(
+                        "DiffviewOpen %s..HEAD", h
+                    ))
+                    return
+                end
+
+                local prev = es[#es]
+                for i, v in ipairs(es) do
+                    if v == s[1] and i < #es then
+                        prev = es[i + 1]
+                    end
+                end
                 vim.api.nvim_command(string.format(
-                "DiffviewOpen %s..HEAD", h
+                    "DiffviewOpen %s..%s", prev, h
                 ))
             end)
             return true
