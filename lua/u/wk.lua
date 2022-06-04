@@ -11,13 +11,7 @@ local tt = require('telescope.themes')
 local actions = require "telescope.actions"
 local fns = require("u.telescope")
 
-local isDir = function(s)
-    local fd = vim.loop.fs_open(s, "r", 438)
-    if fd == nil then return false end
-    local stat = assert(vim.loop.fs_fstat(fd))
-    vim.loop.fs_close(fd)
-    return stat.type == "directory"
-end
+local isDir = sal.isDir
 
 sal["vim-enter"] = function()
     local timer = vim.loop.new_timer()

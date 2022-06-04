@@ -23,62 +23,18 @@ telescope.setup({
 })
 
 
-local gerrit = function(opts)
-    local pickers = require "telescope.pickers"
-    local finders = require "telescope.finders"
-    local conf = require("telescope.config").values
-    local handle = io.popen('git review -l -r origin')
-
-    if handle == nil then
-        return
-    end
-    local action_state = require "telescope.actions.state"
-    local result = handle:read("*a")
-    handle:close()
-
-    local reviews = {}
-    local i = 1
-    if result:find('^No') == nil then
-        for s in result:gmatch("[^\r\n]+") do
-            if s:find('^Found') == nil then
-                reviews[i] = s
-                i = i + 1
-            end
-        end
-    end
-
-    pickers.new(opts, {
-        prompt_title = "gerrit reviews",
-        finder = finders.new_table {
-            results = reviews
-        },
-        sorter = conf.generic_sorter(opts),
-        attach_mappings = function(prompt_bufnr)
-            actions.select_default:replace(function()
-                actions.close(prompt_bufnr)
-                local selection = action_state.get_selected_entry()
-                if selection ~= nil then
-                    local change = string.match(selection[1], '%d*')
-                    os.execute('git review -d ' .. change .. ' -r origin')
-                    local o, _ = pcall(require, "nvim-tree")
-                    if o then
-                        vim.cmd("NvimTreeRefresh")
-                    end
-                end
-            end)
-            return true
-        end,
-    }):find()
-end
-
-
 local results = function()
     local tt = require('telescope.themes')
     local tb = require("telescope.builtin")
 
+
     return {
         { group = 'Nvimtree', desc = 'locate current file', fn = function() vim.cmd("NvimTreeFindFile") end },
-        { group = 'Gerrit', desc = 'pending reviews', fn = function() gerrit(tt.get_dropdown({ previewer = false })) end },
+        { group = 'Gerrit', desc = 'pending reviews', fn = function()
+            local sal = require("u.sal")
+            sal.gerrit(tt.get_dropdown({ previewer = false }))
+        end
+        },
         { group = 'Dap', desc = 'configurations in .vscode/lanuch.json', fn = function()
             local dap = require("dap")
             dap.configurations = {}
@@ -108,7 +64,26 @@ local results = function()
         end },
         { group = 'Git', desc = 'current file commits', fn = function() vim.api.nvim_command [[DiffviewFileHistory]] end,
         },
-        { group = 'Git', desc = 'project diff', fn = function() vim.api.nvim_command [[DiffviewOpen]] end,
+        { group = 'Git', desc = 'diff changes', fn = function()
+            local sal = require("u.sal")
+            if not sal.isDir(".git") then
+                print("not a git repository")
+                return
+            end
+
+            local s = sal.shell("git status --porcelain")
+            if s == nil or s == "" then
+                -- diff latest 2 commit if no changes
+                print("no changes")
+                return
+            end
+            vim.api.nvim_command [[DiffviewOpen]]
+        end,
+        },
+        { group = 'Git', desc = 'diff history commit', fn = function()
+            local sal = require("u.sal")
+            sal.diff(tt.get_dropdown({}))
+        end,
         },
         { group = 'Finder', desc = 'show all diagnostics', fn = function()
             tb.diagnostics({ layout_config = { width = 0.99 } })
