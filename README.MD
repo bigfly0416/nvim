@@ -16,9 +16,7 @@ My nvim configuration
 3. y copy filename, Y copy relative path, gy copy absolute path
 4. d -> delete file/directory
 5. jk -> move cursor, h -> close folder, l -> open, 
-6. H -> toggle visibility of dotfiles
-7. W -> collapse whole tree
-8. ctrl + k -> show file info
+6. press <leader><space> for which key prompt
 
 ## My customize
 
@@ -34,4 +32,4 @@ My nvim configuration
 10. `gL` -> list lsp diagnostics by telescope
 11. `gl` -> list diagnostic at current line 
 14. `K` -> hover
-15. `gh` -> more helps
+15. `gh` -> prompt for helps
