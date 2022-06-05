@@ -94,6 +94,10 @@ local results = function()
             tb.diagnostics({ layout_config = { width = 0.99 } })
         end
         },
+        { group = 'Outline', desc = 'toggle outline', fn = function()
+            vim.cmd [[AerialToggle right]]
+        end
+        },
     }
 end
 

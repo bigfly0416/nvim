@@ -1,3 +1,10 @@
+vim.cmd [[
+  augroup packer_user_config
+    autocmd!
+    autocmd BufWritePost plugins.lua source <afile> | PackerInstall
+  augroup end
+]]
+
 local fn = vim.fn
 
 -- Automatically install packer
@@ -132,4 +139,8 @@ return packer.startup(function(use)
     -- dashboard
     use "goolord/alpha-nvim"
     use "Shatur/neovim-session-manager"
+
+    -- outline
+    use "stevearc/aerial.nvim"
+    use "tpope/vim-surround"
 end)

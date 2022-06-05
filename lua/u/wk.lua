@@ -1,10 +1,13 @@
 -- disable netrw
-vim.api.nvim_exec([[
+vim.cmd [[
     let g:loaded_netrw=1
     let g:loaded_netrwPlugin=1
-    au VimEnter * :lua Sal("vim-enter")
-    au FileType * :lua Sal("buf-new")
-]], false)
+    augroup sal_key_map
+        autocmd!
+        au VimEnter * :lua Sal("vim-enter")
+        au FileType * :lua Sal("buf-new")
+    augroup end
+]]
 
 local sal = require("u.sal")
 local tt = require('telescope.themes')
