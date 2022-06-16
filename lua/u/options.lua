@@ -63,4 +63,6 @@ local ok, _ = pcall(require, "vscode")
 
 if ok then
     vim.cmd [[colorscheme vscode]]
+    --vim.cmd [[highlight CursorLine guifg=NONE guibg=#222222 gui=none]]
 end
+

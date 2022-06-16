@@ -143,4 +143,11 @@ return packer.startup(function(use)
     -- outline
     use "stevearc/aerial.nvim"
     use "tpope/vim-surround"
+    use "norcalli/nvim-colorizer.lua"
+
+    -- notify
+    use "rcarriga/nvim-notify"
+
+    -- code runner
+    use { 'michaelb/sniprun', run = 'bash ./install.sh' }
 end)

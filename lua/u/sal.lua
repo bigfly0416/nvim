@@ -132,14 +132,13 @@ local fns = {
                     os.execute('git review -d ' .. change .. ' -r origin')
                     local o, _ = pcall(require, "nvim-tree")
                     if o then
-                        vim.cmd("NvimTreeRefresh")
+                        vim.cmd [[NvimTreeRefresh]]
                     end
                 end)
                 return true
             end,
         }):find()
-    end
-
+    end,
 }
 function Sal(s)
     local fn = fns[s]

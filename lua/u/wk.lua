@@ -5,7 +5,7 @@ vim.cmd [[
     augroup sal_key_map
         autocmd!
         au VimEnter * :lua Sal("vim-enter")
-        au FileType * :lua Sal("buf-new")
+        au FileType * :lua Sal("file-type")
     augroup end
 ]]
 
@@ -91,7 +91,8 @@ local reg = function(tb, wkTb)
 
     for _, v in ipairs(tb) do
         local desc = v.group .. ":" .. string.rep(" ", max - #v.group + 1, "") .. v.desc
-        wkTb[v.key] = { v.fn, desc }
+        local x = { v.fn, desc }
+        wkTb[v.key] = x
     end
 
     wk.register(wkTb, { buffer = 0 })
@@ -146,7 +147,26 @@ local dvf = function()
     end
 end
 
+local sh = function()
+    local i = 1
+    local mp = vim.api.nvim_buf_set_keymap
+    local maps =
+    {
+        { desc = "run selection", key = "r", fn = "<Plug>SnipRun", mode = "v" },
+        { desc = "run file", key = "r", fn = "<Plug>SnipRun", mode = "n" },
+    }
+
+    for _, v in ipairs(maps) do
+        mp(0, v.mode, v.key, v.fn, { noremap = true, silent = true, desc = v.desc })
+        i = i + 1
+    end
+end
+
 local doMap = function()
+    if vim.bo.filetype == "sh" then
+        sh()
+    end
+
     if vim.bo.filetype == "NvimTree" then
         nvimTree()
         return
@@ -233,4 +253,4 @@ local doMap = function()
     reg(helps, { ["<leader><space>"] = { name = "+helps" } })
 end
 
-sal["buf-new"] = doMap
+sal["file-type"] = doMap

@@ -60,9 +60,9 @@ local results = function()
             vim.cmd("UltestDebugNearest")
         end },
         { group = 'Vim-test', desc = 'test nearest', fn = function()
-            vim.cmd("UltestNearest")
+            vim.cmd [[UltestNearest]]
         end },
-        { group = 'Git', desc = 'current file commits', fn = function() vim.api.nvim_command [[DiffviewFileHistory]] end,
+        { group = 'Git', desc = 'current file commits', fn = function() vim.cmd [[DiffviewFileHistory]] end,
         },
         { group = 'Git', desc = 'diff changes', fn = function()
             local sal = require("u.sal")
