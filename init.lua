@@ -1,6 +1,6 @@
+require "u.plugins"
 require "u.sal"
 require "u.options"
-require "u.plugins"
 require "u.explorer"
 require "u.autosave"
 require "u.lsp"
